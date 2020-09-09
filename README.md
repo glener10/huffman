@@ -16,16 +16,16 @@
 
 __Enter the directory and perform these steps to compress and decompress the sample file "input.txt":__
 
-*__gcc huffman.c -o test__
+- __gcc huffman.c -o test__
 
-*__./test c input.txt output.hx__
+- __./test c input.txt output.hx__
 
 __At that moment, the output.hx file in compressed format will be created__
 
 __and now__
 
 
-*__./test d output.hx input2.txt__
+- __./test d output.hx input2.txt__
 
 __Uncompress the .hx file back to the original file__
 
