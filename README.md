@@ -14,18 +14,18 @@
 # Example
 
 
-__Negrito__Enter the directory and perform these steps to compress and decompress the sample file "input.txt":
+__Enter the directory and perform these steps to compress and decompress the sample file "input.txt":__
 
-*gcc huffman.c -o test
+*__gcc huffman.c -o test__
 
-*./test c input.txt output.hx
+*__./test c input.txt output.hx__
 
-__Negrito__At that moment, the output.hx file in compressed format will be created
+__At that moment, the output.hx file in compressed format will be created__
 
-__Negrito__and now
+__and now__
 
 
-*./test d output.hx input2.txt
+*__./test d output.hx input2.txt__
 
-__Negrito__Uncompress the .hx file back to the original file
+__Uncompress the .hx file back to the original file__
 
