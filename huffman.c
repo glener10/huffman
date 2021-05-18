@@ -1,5 +1,4 @@
-//Autors: Glener Lanes Pizzolato, Alegrete-RS, brazil.
-//First half of 2019
+// (C) First half of 2019 Glener Lanes Pizzolato
 
 
 #include <stdio.h>
