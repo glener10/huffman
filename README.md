@@ -8,7 +8,13 @@
 
 2- Place the .txt file to be compressed or the .hx file to be uncompressed in it.
 
-3- Run as follows: ./huffman c inputname.txt output.hx to compress OR ./huffman d inputname.hx output.txt to decompress.
+3- Run as follows: 
+
+*./huffman c inputname.txt output.hx            __*to compress*__
+
+OR 
+
+./huffman d inputname.hx output.txt              __*to decompress*__
 
 
 # Example
