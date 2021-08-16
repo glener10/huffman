@@ -1,8 +1,33 @@
-# huffman
+<h1 align="center">Huffman</h1>
 
- Huffman's algorithm works to rewrite bytes at a lower cost, totaling fewer bits per character,t he more repeated characters, the more efficient the algorithm will be.
- 
-# How to use
+<p align="center"> 🚀 Huffman's algorithm works to rewrite bytes at a lower cost, totaling fewer bits per character,t he more repeated characters, the more efficient the algorithm will be.</p>
+
+
+Table of Contents
+
+===================
+
+<!--ts-->
+* [Environment](#Environment)
+* [Demo](#Demo)
+
+
+<!--te-->
+
+===================
+
+
+# Environment
+
+Execution environment used and tested:
+
+**SO**: Ubuntu 20.04     **Kernel**: 5.8.0-63-generic
+
+
+
+
+# Demo
+
  
 1- Enter the file directory.
 
@@ -10,28 +35,12 @@
 
 3- Run as follows: 
 
-*./huffman c inputname.txt output.hx            __*to compress*__
+```bash
+# To compress
+$ ./huffman c inputname.txt output.hx            
+```
 
-OR 
-
-./huffman d inputname.hx output.txt              __*to decompress*__
-
-
-# Example
-
-
-__Enter the directory and perform these steps to compress and decompress the sample file "input.txt":__
-
-- __gcc huffman.c -o huffman__
-
-- __./huffman c input.txt output.hx__
-
-__At that moment, the output.hx file in compressed format will be created__
-
-__and now__
-
-
-- __./huffman d output.hx input2.txt__
-
-__Uncompress the .hx file back to the original file__
-
+```bash
+# To decompress
+$ ./huffman d inputname.hx output.txt
+```
