@@ -8,329 +8,329 @@
 
 typedef unsigned char byte;
 
-typedef struct NoArv
+typedef struct NodeTree
 {
-  int frequencia;
+  int frequency;
   byte c;
-  struct NoArv *esquerda;
-  struct NoArv *direita;
-} NoArv;
+  struct NodeTree *left;
+  struct NodeTree *right;
+} NodeTree;
 
-typedef struct NoLista
+typedef struct NodeList
 {
-  NoArv *n;
-  struct NoLista *proximo;
-} NoLista;
+  NodeTree *n;
+  struct NodeList *next;
+} NodeList;
 
-typedef struct lista
+typedef struct list
 {
-  NoLista *head;
-  int elementos;
-} lista;
+  NodeList *head;
+  int elements;
+} list;
 
-NoLista *novoNoLista(NoArv *nArv)
+NodeList *newListNode(NodeTree *nArv)
 {
 
-  NoLista *novo;
-  if ((novo = malloc(sizeof(*novo))) == NULL)
+  NodeList *new;
+  if ((new = malloc(sizeof(*new))) == NULL)
     return NULL;
 
-  novo->n = nArv;
+  new->n = nArv;
 
-  novo->proximo = NULL;
+  new->next = NULL;
 
-  return novo;
+  return new;
 }
 
-NoArv *novoNoArv(byte c, int frequencia, NoArv *esquerda, NoArv *direita)
+NodeTree *newTreeNode(byte c, int frequency, NodeTree *left, NodeTree *right)
 {
 
-  NoArv *novo;
+  NodeTree *new;
 
-  if ((novo = malloc(sizeof(*novo))) == NULL)
+  if ((new = malloc(sizeof(*new))) == NULL)
     return NULL;
 
-  novo->c = c;
-  novo->frequencia = frequencia;
-  novo->esquerda = esquerda;
-  novo->direita = direita;
+  new->c = c;
+  new->frequency = frequency;
+  new->left = left;
+  new->right = right;
 
-  return novo;
+  return new;
 }
 
-void insereLista(NoLista *n, lista *l)
+void insertList(NodeList *n, list *l)
 {
   if (!l->head)
   {
     l->head = n;
   }
 
-  else if (n->n->frequencia < l->head->n->frequencia)
+  else if (n->n->frequency < l->head->n->frequency)
   {
-    n->proximo = l->head;
+    n->next = l->head;
     l->head = n;
   }
 
   else
   {
-    NoLista *aux = l->head->proximo;
-    NoLista *aux2 = l->head;
+    NodeList *aux = l->head->next;
+    NodeList *aux2 = l->head;
 
-    while (aux && aux->n->frequencia <= n->n->frequencia)
+    while (aux && aux->n->frequency <= n->n->frequency)
     {
       aux2 = aux;
-      aux = aux2->proximo;
+      aux = aux2->next;
     }
 
-    aux2->proximo = n;
-    n->proximo = aux;
+    aux2->next = n;
+    n->next = aux;
   }
-  l->elementos++;
+  l->elements++;
 }
 
-NoArv *popMinLista(lista *l)
+NodeTree *popMinlist(list *l)
 {
 
-  NoLista *aux = l->head;
-  NoArv *aux2 = aux->n;
+  NodeList *aux = l->head;
+  NodeTree *aux2 = aux->n;
 
-  l->head = aux->proximo;
+  l->head = aux->next;
 
   free(aux);
   aux = NULL;
 
-  l->elementos--;
+  l->elements--;
   return aux2;
 }
 
-void frequenciabyte(FILE *entrada, unsigned int *listaBytes)
+void frequencybyte(FILE *input, unsigned int *listBytes)
 {
   byte c;
 
-  while (fread(&c, 1, 1, entrada) >= 1)
+  while (fread(&c, 1, 1, input) >= 1)
   {
-    listaBytes[(byte)c]++;
+    listBytes[(byte)c]++;
   }
-  rewind(entrada);
+  rewind(input);
 }
 
-bool pegaCodigo(NoArv *n, byte c, char *buffer, int tamanho)
+bool findCode(NodeTree *n, byte c, char *buffer, int size)
 {
 
-  if (!(n->esquerda || n->direita) && n->c == c)
+  if (!(n->left || n->right) && n->c == c)
   {
-    buffer[tamanho] = '\0';
+    buffer[size] = '\0';
     return true;
   }
 
   else
   {
-    bool encontrado = false;
+    bool finded = false;
 
-    if (n->esquerda)
+    if (n->left)
     {
-      buffer[tamanho] = '0';
-      encontrado = pegaCodigo(n->esquerda, c, buffer, tamanho + 1);
+      buffer[size] = '0';
+      finded = findCode(n->left, c, buffer, size + 1);
     }
 
-    if (!encontrado && n->direita)
+    if (!finded && n->right)
     {
-      buffer[tamanho] = '1';
-      encontrado = pegaCodigo(n->direita, c, buffer, tamanho + 1);
+      buffer[size] = '1';
+      finded = findCode(n->right, c, buffer, size + 1);
     }
 
-    if (!encontrado)
+    if (!finded)
     {
-      buffer[tamanho] = '\0';
+      buffer[size] = '\0';
     }
-    return encontrado;
+    return finded;
   }
 }
 
-NoArv *huffmanArv(unsigned *listaBytes)
+NodeTree *huffmanArv(unsigned *listBytes)
 {
 
-  lista l = {NULL, 0};
+  list l = {NULL, 0};
 
   for (int i = 0; i < 256; i++)
   {
-    if (listaBytes[i])
+    if (listBytes[i])
     {
-      insereLista(novoNoLista(novoNoArv(i, listaBytes[i], NULL, NULL)), &l);
+      insertList(newListNode(newTreeNode(i, listBytes[i], NULL, NULL)), &l);
     }
   }
 
-  while (l.elementos > 1)
+  while (l.elements > 1)
   {
-    NoArv *nodeEsquerdo = popMinLista(&l);
-    NoArv *nodeDireito = popMinLista(&l);
-    NoArv *soma = novoNoArv('#', nodeEsquerdo->frequencia + nodeDireito->frequencia, nodeEsquerdo, nodeDireito);
+    NodeTree *leftNode = popMinlist(&l);
+    NodeTree *rightNode = popMinlist(&l);
+    NodeTree *sum = newTreeNode('#', leftNode->frequency + rightNode->frequency, leftNode, rightNode);
 
-    insereLista(novoNoLista(soma), &l);
+    insertList(newListNode(sum), &l);
   }
 
-  return popMinLista(&l);
+  return popMinlist(&l);
 }
 
-void liberaHuffman(NoArv *n)
+void freeHuffmanTree(NodeTree *n)
 {
 
   if (!n)
     return;
   else
   {
-    NoArv *esquerda = n->esquerda;
-    NoArv *direita = n->direita;
+    NodeTree *left = n->left;
+    NodeTree *right = n->right;
     free(n);
-    liberaHuffman(esquerda);
-    liberaHuffman(direita);
+    freeHuffmanTree(left);
+    freeHuffmanTree(right);
   }
 }
 
 // Bitmasking, taken from: http://ellard.org/dan/www/CS50-95/s10.html
-int geraBit(FILE *entrada, int posicao, byte *aux)
+int generateBit(FILE *input, int position, byte *aux)
 {
-  (posicao % 8 == 0) ? fread(aux, 1, 1, entrada) : NULL == NULL;
-  return !!((*aux) & (1 << (posicao % 8)));
+  (position % 8 == 0) ? fread(aux, 1, 1, input) : NULL == NULL;
+  return !!((*aux) & (1 << (position % 8)));
 }
 
-void erroArquivo()
+void inputReadingError()
 {
-  printf("Arquivo nao encontrado\n");
+  printf("Error in reading file.\n");
   exit(0);
 }
 
-void comprime(const char *arquivoEntrada, const char *arquivoSaida)
+void compress(const char *inputFile, const char *outputFile)
 {
 
-  clock_t inicio, final;
-  double tempoGasto;
-  inicio = clock();
+  clock_t beginTime, finalTime;
+  double timeOfExecution;
+  beginTime = clock();
 
-  unsigned listaBytes[256] = {0};
+  unsigned listBytes[256] = {0};
 
-  FILE *entrada = fopen(arquivoEntrada, "rb");
-  if (arquivoEntrada == NULL)
+  FILE *input = fopen(inputFile, "rb");
+  if (inputFile == NULL)
   {
-    erroArquivo();
+    inputReadingError();
   }
 
-  FILE *saida = fopen(arquivoSaida, "wb");
-  if (arquivoSaida == NULL)
+  FILE *output = fopen(outputFile, "wb");
+  if (outputFile == NULL)
   {
-    erroArquivo();
+    inputReadingError();
   }
 
-  frequenciabyte(entrada, listaBytes);
-  NoArv *raiz = huffmanArv(listaBytes);
-  fwrite(listaBytes, 256, sizeof(listaBytes[0]), saida);
-  fseek(saida, sizeof(unsigned int), SEEK_CUR);
+  frequencybyte(input, listBytes);
+  NodeTree *rootOfTree = huffmanArv(listBytes);
+  fwrite(listBytes, 256, sizeof(listBytes[0]), output);
+  fseek(output, sizeof(unsigned int), SEEK_CUR);
   byte c;
-  unsigned tamanho = 0;
+  unsigned size = 0;
   byte aux = 0;
 
-  while (fread(&c, 1, 1, entrada) >= 1)
+  while (fread(&c, 1, 1, input) >= 1)
   {
     char buffer[1024] = {0};
-    pegaCodigo(raiz, c, buffer, 0);
+    findCode(rootOfTree, c, buffer, 0);
 
     for (char *i = buffer; *i; i++)
     {
       if (*i == '1')
       {
-        aux = aux | (1 << (tamanho % 8));
+        aux = aux | (1 << (size % 8));
       }
 
-      tamanho++;
+      size++;
 
-      if (tamanho % 8 == 0)
+      if (size % 8 == 0)
       {
-        fwrite(&aux, 1, 1, saida);
+        fwrite(&aux, 1, 1, output);
         aux = 0;
       }
     }
   }
 
-  fwrite(&aux, 1, 1, saida);
+  fwrite(&aux, 1, 1, output);
 
-  fseek(saida, 256 * sizeof(unsigned int), SEEK_SET);
-  fwrite(&tamanho, 1, sizeof(unsigned), saida);
+  fseek(output, 256 * sizeof(unsigned int), SEEK_SET);
+  fwrite(&size, 1, sizeof(unsigned), output);
 
-  final = clock();
-  tempoGasto = (double)(final - inicio) / CLOCKS_PER_SEC;
+  finalTime = clock();
+  timeOfExecution = (double)(finalTime - beginTime) / CLOCKS_PER_SEC;
 
-  fseek(entrada, 0L, SEEK_END);
-  double tamanhoEntrada = ftell(entrada);
+  fseek(input, 0L, SEEK_END);
+  double sizeinput = ftell(input);
 
-  fseek(saida, 0L, SEEK_END);
-  double tamanhoSaida = ftell(saida);
+  fseek(output, 0L, SEEK_END);
+  double outputSize = ftell(output);
 
-  liberaHuffman(raiz);
+  freeHuffmanTree(rootOfTree);
 
-  printf("%s: (%g Bytes)\n%s: (%g Bytes)\n\nTime: %g s", arquivoEntrada, tamanhoEntrada / 1000, arquivoSaida, tamanhoSaida / 1000, tempoGasto);
-  printf("Compress: %d%%\n", (int)((100 * tamanhoSaida) / tamanhoEntrada));
+  printf("%s: (%g Bytes)\n%s: (%g Bytes)\n\nTime: %g s", inputFile, sizeinput / 1000, outputFile, outputSize / 1000, timeOfExecution);
+  printf("Compress: %d%%\n", (int)((100 * outputSize) / sizeinput));
 
-  fclose(entrada);
-  fclose(saida);
+  fclose(input);
+  fclose(output);
 }
 
-void descomprime(const char *arquivoEntrada, const char *arquivoSaida)
+void decompress(const char *inputFile, const char *outputFile)
 {
 
-  clock_t inicio, final;
-  double tempoGasto;
-  inicio = clock();
+  clock_t beginTime, finalTime;
+  double timeOfExecution;
+  beginTime = clock();
 
-  unsigned listaBytes[256] = {0};
+  unsigned listBytes[256] = {0};
 
-  FILE *entrada = fopen(arquivoEntrada, "rb");
-  if (arquivoEntrada == NULL)
+  FILE *input = fopen(inputFile, "rb");
+  if (inputFile == NULL)
   {
-    erroArquivo();
+    inputReadingError();
   }
 
-  FILE *saida = fopen(arquivoSaida, "wb");
-  if (arquivoSaida == NULL)
+  FILE *output = fopen(outputFile, "wb");
+  if (outputFile == NULL)
   {
-    erroArquivo();
+    inputReadingError();
   }
 
-  fread(listaBytes, 256, sizeof(listaBytes[0]), entrada);
-  NoArv *raiz = huffmanArv(listaBytes);
+  fread(listBytes, 256, sizeof(listBytes[0]), input);
+  NodeTree *rootOfTree = huffmanArv(listBytes);
 
-  unsigned tamanho;
-  fread(&tamanho, 1, sizeof(tamanho), entrada);
+  unsigned size;
+  fread(&size, 1, sizeof(size), input);
 
-  unsigned posicao = 0;
+  unsigned position = 0;
   byte aux = 0;
 
-  while (posicao < tamanho)
+  while (position < size)
   {
 
-    NoArv *nodeAtual = raiz;
-    while (nodeAtual->esquerda || nodeAtual->direita)
+    NodeTree *nodeAtual = rootOfTree;
+    while (nodeAtual->left || nodeAtual->right)
     {
-      nodeAtual = geraBit(entrada, posicao++, &aux) ? nodeAtual->direita : nodeAtual->esquerda;
+      nodeAtual = generateBit(input, position++, &aux) ? nodeAtual->right : nodeAtual->left;
     }
-    fwrite(&(nodeAtual->c), 1, 1, saida);
+    fwrite(&(nodeAtual->c), 1, 1, output);
   }
 
-  liberaHuffman(raiz);
+  freeHuffmanTree(rootOfTree);
 
-  final = clock();
-  tempoGasto = (double)(final - inicio) / CLOCKS_PER_SEC;
+  finalTime = clock();
+  timeOfExecution = (double)(finalTime - beginTime) / CLOCKS_PER_SEC;
 
-  fseek(entrada, 0L, SEEK_END);
-  double tamanhoEntrada = ftell(entrada);
+  fseek(input, 0L, SEEK_END);
+  double sizeinput = ftell(input);
 
-  fseek(saida, 0L, SEEK_END);
-  double tamanhoSaida = ftell(saida);
+  fseek(output, 0L, SEEK_END);
+  double outputSize = ftell(output);
 
-  printf("%s (%g bytes)\n%s (%g bytes)\n\nTime: %g s\n", arquivoEntrada, tamanhoEntrada / 1000, arquivoSaida, tamanhoSaida / 1000, tempoGasto);
-  printf("Uncompress: %d%%\n", (int)((100 * tamanhoSaida) / tamanhoEntrada));
+  printf("%s (%g bytes)\n%s (%g bytes)\n\nTime: %gs\n", inputFile, sizeinput / 1000, outputFile, outputSize / 1000, timeOfExecution);
+  printf("Uncompress: %d%%\n", (int)((100 * outputSize) / sizeinput));
 
-  fclose(saida);
-  fclose(entrada);
+  fclose(output);
+  fclose(input);
 }
 
 int main(int argc, char *argv[])
@@ -348,8 +348,8 @@ int main(int argc, char *argv[])
     if (strstr(argv[3], ".hx"))
     {
 
-      printf("\ncompressing ...");
-      comprime(argv[2], argv[3]);
+      printf("\ncompressing...");
+      compress(argv[2], argv[3]);
     }
     else
     {
@@ -362,8 +362,8 @@ int main(int argc, char *argv[])
   {
     if (strstr(argv[2], ".hx"))
     {
-      printf("\nuncompressing ...");
-      descomprime(argv[2], argv[3]);
+      printf("\nuncompressing...");
+      decompress(argv[2], argv[3]);
     }
     else
     {
