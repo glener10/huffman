@@ -326,7 +326,7 @@ void decompress(const char *inputFile, const char *outputFile)
   fseek(output, 0L, SEEK_END);
   double outputSize = ftell(output);
 
-  printf("%s (%g bytes)\n%s (%g bytes)\n\nTime: %g s\n", inputFile, sizeinput / 1000, outputFile, outputSize / 1000, timeOfExecution);
+  printf("%s (%g bytes)\n%s (%g bytes)\n\nTime: %gs\n", inputFile, sizeinput / 1000, outputFile, outputSize / 1000, timeOfExecution);
   printf("Uncompress: %d%%\n", (int)((100 * outputSize) / sizeinput));
 
   fclose(output);
@@ -348,7 +348,7 @@ int main(int argc, char *argv[])
     if (strstr(argv[3], ".hx"))
     {
 
-      printf("\ncompressing ...");
+      printf("\ncompressing...");
       compress(argv[2], argv[3]);
     }
     else
@@ -362,7 +362,7 @@ int main(int argc, char *argv[])
   {
     if (strstr(argv[2], ".hx"))
     {
-      printf("\nuncompressing ...");
+      printf("\nuncompressing...");
       decompress(argv[2], argv[3]);
     }
     else
