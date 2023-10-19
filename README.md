@@ -39,9 +39,15 @@ $ gcc huffman.c -o huffman
 ```bash
 # To compress
 $ ./huffman c inputname.txt output.hx
+
+# In Windows
+$ huffman.exe c inputname.txt output.hx
 ```
 
 ```bash
 # To decompress
 $ ./huffman d inputname.hx output.txt
+
+# In Windows
+$ huffman.exe d output.hx inputname.txt
 ```
